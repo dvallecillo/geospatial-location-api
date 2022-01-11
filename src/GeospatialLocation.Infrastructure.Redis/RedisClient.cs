@@ -1,93 +1,45 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GeospatialLocation.Application.ViewModels;
+using GeospatialLocation.Domain.Entities;
+using StackExchange.Redis;
 
 namespace GeospatialLocation.Infrastructure.Redis
 {
     public class RedisClient : IRedisClient
     {
         private readonly IRedisDataClient dataClient;
-        private readonly IScalarSerializer scalarSerializer;
-        private readonly ISerializer serializer;
 
-        public RedisClient(
-            ISerializer serializer, IRedisDataClient dataClient, IScalarSerializer scalarSerializer)
+        public RedisClient(IRedisDataClient dataClient)
         {
-            this.serializer = serializer;
             this.dataClient = dataClient;
-            this.scalarSerializer = scalarSerializer;
         }
 
-        public Task<long> GenerateIdAsync(string key)
+        public Task<long> AddGeoPoints(string key, ICollection<Location> locations)
         {
-            return dataClient.IncrementAsync(key);
+            return dataClient.AddGeoPoints(key, locations.Select(CreateGeoEntry).ToArray());
         }
 
-        public async Task<T?> GetAsync<T>(string key)
+        public async Task<IEnumerable<LocationResultView>> GetLocations(string key, double lat,
+            double lon, int maxDistance, int maxResults)
         {
-            var bytes = await dataClient.StringGetAsync(key);
-            var data = serializer.Deserialize<T>(bytes);
+            var results = await dataClient.GetNearbyGeoPoints(key, lat, lon, maxDistance, maxResults);
 
-            return data;
+            return results.Select(CreateLocationView).Take(maxResults);
         }
 
-        public Task SetAsync<T>(string key, T data)
+        private static GeoEntry CreateGeoEntry(Location location)
         {
-            var bytes = serializer.Serialize(data);
-            return dataClient.StringSetAsync(key, bytes);
+            return new GeoEntry(
+                location.Longitude, location.Latitude, location.Address
+            );
         }
 
-        public Task SetStringAsync(string key, string value)
+        private static LocationResultView CreateLocationView(GeoRadiusResult result)
         {
-            return dataClient.StringSetAsync(key, value);
-        }
-
-        public Task<bool> ExistsAsync(string key)
-        {
-            return dataClient.ExistsAsync(key);
-        }
-
-        public Task HashSetAsync(string key, string field, long value)
-        {
-            var bytes = scalarSerializer.Serialize(value);
-
-            return dataClient.HashSetAsync(key, field, bytes);
-        }
-
-        public async Task<long?> HashGetAsync(string key, string field)
-        {
-            var result = await dataClient.HashGetAsync(key, field);
-
-            if (result is null)
-            {
-                return null;
-            }
-
-            return scalarSerializer.Deserialize<long>(result);
-        }
-
-        public Task<long[]> GetSetAsIntAsync(string key)
-        {
-            return dataClient.GetSetAsIntAsync(key);
-        }
-
-        public Task AddToSetAsync(string key, long id)
-        {
-            return dataClient.SetAddAsync(key, id);
-        }
-
-        public Task RemoveFromSetAsync(string key, long id)
-        {
-            return dataClient.SetRemoveAsync(key, id);
-        }
-
-        public Task HashSetScalarAsync<T>(string key, string field, T value)
-        {
-            var bytes = scalarSerializer.Serialize(value);
-            return dataClient.HashSetAsync(key, field, bytes);
-        }
-
-        public Task HashDeleteAsync(string key, string field)
-        {
-            return dataClient.HashDeleteAsync(key, field);
+            var position = result.Position.GetValueOrDefault();
+            return new LocationResultView(result.Member, result.Distance, position.Latitude, position.Longitude);
         }
     }
 }

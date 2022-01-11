@@ -1,8 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using CsvHelper;
 using GeospatialLocation.Application;
+using GeospatialLocation.Application.Commands;
 using GeospatialLocation.Application.Queries;
 using GeospatialLocation.Application.ViewModels;
+using GeospatialLocation.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +19,6 @@ namespace GeospatialLocation.API.Controllers
     [Route("[controller]")]
     public class LocationsController : ControllerBase
     {
-        private static readonly string[] Summaries =
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-
         private readonly IMediator bus;
 
         public LocationsController(IMediator bus)
@@ -25,21 +26,8 @@ namespace GeospatialLocation.API.Controllers
             this.bus = bus;
         }
 
-        //[HttpGet]
-        //public IEnumerable<WeatherForecast> GetWeather()
-        //{
-        //    var rng = new Random();
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //        {
-        //            Date = DateTime.Now.AddDays(index),
-        //            TemperatureC = rng.Next(-20, 55),
-        //            Summary = Summaries[rng.Next(Summaries.Length)]
-        //        })
-        //        .ToArray();
-        //}
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LocationView>>> Get(
+        public async Task<ActionResult<IEnumerable<LocationResultView>>> Get(
             [FromQuery] LocationsRequest request)
         {
             var query = new GetLocationsQuery(request.Lat, request.Lon,
@@ -47,6 +35,33 @@ namespace GeospatialLocation.API.Controllers
 
             var locations = await bus.Send(query);
             return Ok(locations);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateInitialLoad([FromQuery] string fileName)
+        {
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var path = Path.Combine(currentDirectory, $"ExampleData\\{fileName}.csv");
+
+            IEnumerable<Location> records;
+            try
+            {
+                using (var reader = new StreamReader(path))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    records = csv.GetRecords<Location>().ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            var command = new CreateLocationInitialLoadCommand(records);
+
+            await bus.Send(command);
+
+            return Ok();
         }
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeospatialLocation.API", "G
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrasctructure", "Infrasctructure", "{85B1587F-2A9F-425A-AE57-37618E5B8A73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeospatialLocation.Infrastructure.IoC", "GeospatialLocation.Infrastructure.IoC\GeospatialLocation.Infrastructure.IoC.csproj", "{3CFF51CA-8DCF-4855-8F9E-14C9189CF912}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeospatialLocation.Infrastructure.IoC", "GeospatialLocation.Infrastructure.IoC\GeospatialLocation.Infrastructure.IoC.csproj", "{3CFF51CA-8DCF-4855-8F9E-14C9189CF912}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{9AB506C6-CE61-40E9-912F-3D70726BF686}"
 EndProject
@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{A7A1D7D0-FDA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{06B6F416-C79E-4D43-85FD-3E1B54C036E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeospatialLocation.Application", "GeospatialLocation.Application\GeospatialLocation.Application.csproj", "{5E04212B-3515-4ED0-9BB7-A1D05DF197C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeospatialLocation.Application", "GeospatialLocation.Application\GeospatialLocation.Application.csproj", "{5E04212B-3515-4ED0-9BB7-A1D05DF197C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeospatialLocation.Domain", "GeospatialLocation.Domain\GeospatialLocation.Domain.csproj", "{F7DE7CCE-551F-4231-A490-7068385630BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeospatialLocation.Domain", "GeospatialLocation.Domain\GeospatialLocation.Domain.csproj", "{F7DE7CCE-551F-4231-A490-7068385630BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeospatialLocation.Infrastructure.Redis", "GeospatialLocation.Infrastructure.Redis\GeospatialLocation.Infrastructure.Redis.csproj", "{646BF9A7-D140-4424-867D-90408F477B86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeospatialLocation.Infrastructure.Redis", "GeospatialLocation.Infrastructure.Redis\GeospatialLocation.Infrastructure.Redis.csproj", "{646BF9A7-D140-4424-867D-90408F477B86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

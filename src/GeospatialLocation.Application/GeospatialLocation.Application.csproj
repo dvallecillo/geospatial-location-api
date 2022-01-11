@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <ProjectReference Include="..\GeospatialLocation.Domain\GeospatialLocation.Domain.csproj" />
   </ItemGroup>
 
 </Project>

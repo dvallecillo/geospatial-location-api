@@ -7,7 +7,7 @@ using MediatR;
 namespace GeospatialLocation.Application.Queries
 {
     public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery,
-        IEnumerable<LocationView>>
+        IEnumerable<LocationResultView>>
     {
         private readonly ILocationQueries queries;
 
@@ -16,7 +16,7 @@ namespace GeospatialLocation.Application.Queries
             this.queries = queries;
         }
 
-        public async Task<IEnumerable<LocationView>> Handle(
+        public async Task<IEnumerable<LocationResultView>> Handle(
             GetLocationsQuery request,
             CancellationToken cancellationToken)
         {

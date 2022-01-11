@@ -6,6 +6,7 @@ namespace GeospatialLocation.Application.Queries
 {
     public interface ILocationQueries
     {
-        Task<IEnumerable<LocationView>> GetLocationsAsync(double lat, double lon, int maxDistance, int maxResults);
+        Task<IEnumerable<LocationResultView>>
+            GetLocationsAsync(double lat, double lon, int maxDistance, int maxResults);
     }
 }

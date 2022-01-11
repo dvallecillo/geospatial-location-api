@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using GeospatialLocation.Application.Queries;
 using GeospatialLocation.Domain.Repositories;
-using GeospatialLocation.Domain.SeedWork;
 using GeospatialLocation.Infrastructure.Redis;
 using GeospatialLocation.Infrastructure.Redis.Queries;
 using GeospatialLocation.Infrastructure.Redis.Repositories;
@@ -13,10 +12,6 @@ namespace GeospatialLocation.Infrastructure.IoC
         protected override void Load(ContainerBuilder builder)
         {
             LoadRedis(builder);
-
-            builder.RegisterType<RedisUnitOfWork>()
-                .As<IUnitOfWork>()
-                .InstancePerLifetimeScope();
 
             builder.RegisterType<LocationRepository>()
                 .As<ILocationRepository>()

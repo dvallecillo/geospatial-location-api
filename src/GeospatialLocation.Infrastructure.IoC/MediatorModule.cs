@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Autofac;
 using GeospatialLocation.Application.Behaviors;
+using GeospatialLocation.Application.Commands;
 using GeospatialLocation.Application.Queries;
 using MediatR;
 using Module = Autofac.Module;
@@ -16,6 +17,10 @@ namespace GeospatialLocation.Infrastructure.IoC
 
             builder.RegisterAssemblyTypes(
                     typeof(GetLocationsQuery).GetTypeInfo().Assembly)
+                .AsClosedTypesOf(typeof(IRequestHandler<,>));
+
+            builder.RegisterAssemblyTypes(
+                    typeof(CreateLocationInitialLoadCommand).GetTypeInfo().Assembly)
                 .AsClosedTypesOf(typeof(IRequestHandler<,>));
 
 

@@ -9,11 +9,11 @@ namespace GeospatialLocation.Application.Behaviors
     public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
-        private readonly ILogger<LoggingBehavior<TRequest, TResponse>> logger;
+        private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
         public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
         {
-            this.logger = logger;
+            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -23,11 +23,11 @@ namespace GeospatialLocation.Application.Behaviors
             var requestName = request!.GetGenericTypeName();
             var requestType = requestName.EndsWith("Query") ? "Query" : "Command";
 
-            logger.LogInformation(
+            _logger.LogInformation(
                 "--- Handling {RequestType} {RequestName} ({@Request})", requestType, requestName,
                 request);
             var response = await next();
-            logger.LogInformation(
+            _logger.LogInformation(
                 "--- {RequestType} {RequestName} handled", requestType, requestName);
 
             return response;

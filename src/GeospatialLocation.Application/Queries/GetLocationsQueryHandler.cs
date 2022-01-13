@@ -9,18 +9,18 @@ namespace GeospatialLocation.Application.Queries
     public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery,
         IEnumerable<LocationResultView>>
     {
-        private readonly ILocationQueries queries;
+        private readonly ILocationQueries _queries;
 
         public GetLocationsQueryHandler(ILocationQueries queries)
         {
-            this.queries = queries;
+            _queries = queries;
         }
 
         public async Task<IEnumerable<LocationResultView>> Handle(
             GetLocationsQuery request,
             CancellationToken cancellationToken)
         {
-            return await queries.GetLocationsAsync(
+            return await _queries.GetLocationsAsync(
                 request.Lat,
                 request.Lon,
                 request.MaxDistance,

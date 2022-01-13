@@ -19,11 +19,11 @@ namespace GeospatialLocation.API.Controllers
     [Route("[controller]")]
     public class LocationsController : ControllerBase
     {
-        private readonly IMediator bus;
+        private readonly IMediator _bus;
 
         public LocationsController(IMediator bus)
         {
-            this.bus = bus;
+            _bus = bus;
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace GeospatialLocation.API.Controllers
             var query = new GetLocationsQuery(request.Lat, request.Lon,
                 request.MaxDistance, request.MaxResults);
 
-            var locations = await bus.Send(query);
+            var locations = await _bus.Send(query);
             return Ok(locations);
         }
 
@@ -59,7 +59,7 @@ namespace GeospatialLocation.API.Controllers
 
             var command = new CreateLocationInitialLoadCommand(records);
 
-            await bus.Send(command);
+            await _bus.Send(command);
 
             return Ok();
         }

@@ -5,29 +5,29 @@ namespace GeospatialLocation.Infrastructure.Redis
 {
     public static class RedisConnectionFactory
     {
-        private static RedisSettings Settings = null!;
+        private static RedisSettings _settings = null!;
 
         public static void SetConnection(RedisSettings redisSettings)
         {
-            Settings = redisSettings;
+            _settings = redisSettings;
         }
 
         public static ConnectionMultiplexer CreateConnection()
         {
-            if (Settings == null)
+            if (_settings == null)
             {
-                throw new ArgumentNullException(nameof(Settings));
+                throw new ArgumentNullException(nameof(_settings));
             }
 
-            var options = ConfigurationOptions.Parse(Settings.Host);
+            var options = ConfigurationOptions.Parse(_settings.Host);
 
             // Add timeout, releasing can cause connecting issues otherwise
             options.AbortOnConnectFail = false;
             options.SyncTimeout = 20000;
 
-            if (!string.IsNullOrWhiteSpace(Settings.Pass))
+            if (!string.IsNullOrWhiteSpace(_settings.Pass))
             {
-                options.Password = Settings.Pass;
+                options.Password = _settings.Pass;
             }
 
             return ConnectionMultiplexer.Connect(options);

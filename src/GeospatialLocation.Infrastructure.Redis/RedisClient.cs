@@ -9,22 +9,22 @@ namespace GeospatialLocation.Infrastructure.Redis
 {
     public class RedisClient : IRedisClient
     {
-        private readonly IRedisDataClient dataClient;
+        private readonly IRedisDataClient _dataClient;
 
         public RedisClient(IRedisDataClient dataClient)
         {
-            this.dataClient = dataClient;
+            _dataClient = dataClient;
         }
 
         public Task<long> AddGeoPoints(string key, ICollection<Location> locations)
         {
-            return dataClient.AddGeoPoints(key, locations.Select(CreateGeoEntry).ToArray());
+            return _dataClient.AddGeoPoints(key, locations.Select(CreateGeoEntry).ToArray());
         }
 
         public async Task<IEnumerable<LocationResultView>> GetLocations(string key, double lat,
             double lon, int maxDistance, int maxResults)
         {
-            var results = await dataClient.GetNearbyGeoPoints(key, lat, lon, maxDistance, maxResults);
+            var results = await _dataClient.GetNearbyGeoPoints(key, lat, lon, maxDistance, maxResults);
 
             return results.Select(CreateLocationView).Take(maxResults);
         }

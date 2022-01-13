@@ -9,24 +9,24 @@ namespace GeospatialLocation.Infrastructure.Redis
         private static readonly Lazy<ConnectionMultiplexer> Connection
             = new(RedisConnectionFactory.CreateConnection);
 
-        private readonly IDatabase database;
+        private readonly IDatabase _database;
 
         public RedisDataClient()
         {
-            database = Redis.GetDatabase();
+            _database = Redis.GetDatabase();
         }
 
         public ConnectionMultiplexer Redis => Connection.Value;
 
         public Task<long> AddGeoPoints(string key, GeoEntry[] locations)
         {
-            return database.GeoAddAsync(key, locations);
+            return _database.GeoAddAsync(key, locations);
         }
 
         public Task<GeoRadiusResult[]> GetNearbyGeoPoints(string key, double lat, double lon, int maxDistance,
             int maxResults)
         {
-            return database.GeoRadiusAsync(key, lon, lat, maxDistance, GeoUnit.Meters, maxResults, Order.Ascending);
+            return _database.GeoRadiusAsync(key, lon, lat, maxDistance, GeoUnit.Meters, maxResults, Order.Ascending);
         }
     }
 }

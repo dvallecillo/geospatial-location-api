@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using GeospatialLocation.Application.Queries;
+using GeospatialLocation.Application.Services;
 using GeospatialLocation.Domain.Repositories;
 using GeospatialLocation.Infrastructure.Redis;
 using GeospatialLocation.Infrastructure.Redis.Queries;
@@ -20,6 +21,10 @@ namespace GeospatialLocation.Infrastructure.IoC
             builder.RegisterType<LocationQueries>()
                 .As<ILocationQueries>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<LocationService>()
+                .As<ILocationService>()
+                .InstancePerLifetimeScope();
         }
 
         private static void LoadRedis(ContainerBuilder builder)
@@ -31,14 +36,6 @@ namespace GeospatialLocation.Infrastructure.IoC
             builder.RegisterType<RedisDataClient>()
                 .As<IRedisDataClient>()
                 .InstancePerLifetimeScope();
-
-            builder.RegisterType<ScalarSerializer>()
-                .As<IScalarSerializer>()
-                .InstancePerDependency();
-
-            builder.RegisterType<JsonNetSerializer>()
-                .As<ISerializer>()
-                .InstancePerDependency();
         }
     }
 }

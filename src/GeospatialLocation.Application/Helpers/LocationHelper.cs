@@ -50,31 +50,51 @@ namespace GeospatialLocation.Application.Helpers
                    cluster.Longitude >= currentCluster.MinLon;
         }
 
-        public static Point CalculateCentroid(ICollection<Location> locations)
-        {
-            var locationAmount = locations.Count;
-            var latitudeSum = locations.Sum(l => l.Latitude);
-            var longitudeSum = locations.Sum(l => l.Longitude);
-
-            return new Point
-            {
-                Latitude = latitudeSum / locationAmount,
-                Longitude = longitudeSum / locationAmount
-            };
-        }
-
-        public static void CombineCluster(Cluster cluster, Cluster match)
-        {
-            var location = cluster.Locations.First();
-            match.Locations.Add(location);
-            //TODO: I think it is not necessary
-            //match.Center = CalculateCentroid(match.Locations);
-        }
-
         public static bool IsValid(Location location)
         {
             return location.Latitude >= LocationConstants.MinLat && location.Longitude >= LocationConstants.MinLon &&
                    location.Latitude <= LocationConstants.MaxLat && location.Longitude <= LocationConstants.MaxLon;
+        }
+
+        public static Boundary CreateBoundary(Point point)
+        {
+            var latitudesOffset = new List<double>
+            {
+                Add(point, LocationConstants.ClusterRange, 0).Latitude,
+                Add(point, -1 * LocationConstants.ClusterRange, 0).Latitude
+            };
+            var longitudesOffset = new List<double>
+            {
+                Add(point, 0, LocationConstants.ClusterRange).Longitude,
+                Add(point, 0, -1 * LocationConstants.ClusterRange).Longitude
+            };
+
+            return new Boundary
+            {
+                MinLat = latitudesOffset.Min(),
+                MaxLat = latitudesOffset.Max(),
+                MinLon = longitudesOffset.Min(),
+                MaxLon = longitudesOffset.Max()
+            };
+        }
+
+        public static Cluster CreateCluster(Location location)
+        {
+            var center = new Point
+            {
+                Latitude = location.Latitude,
+                Longitude = location.Longitude
+            };
+            return new Cluster
+            {
+                Id = Guid.NewGuid(),
+                Locations = new List<Location>
+                {
+                    location
+                },
+                Center = center,
+                Boundary = CreateBoundary(center)
+            };
         }
     }
 }

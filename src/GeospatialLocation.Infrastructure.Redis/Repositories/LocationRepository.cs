@@ -1,21 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeospatialLocation.Domain.Entities;
 using GeospatialLocation.Domain.Repositories;
+using GeospatialLocation.Domain.SeedWork;
+using GeospatialLocation.Infrastructure.Redis.Helpers;
 
 namespace GeospatialLocation.Infrastructure.Redis.Repositories
 {
     public class LocationRepository : RedisRepository, ILocationRepository
     {
-        private const string CollectionKey = "locations";
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LocationRepository(IRedisClient client) : base(client)
+        public LocationRepository(IRedisClient client, IUnitOfWork unitOfWork) : base(client)
         {
+            _unitOfWork = unitOfWork;
         }
 
-        public Task<long> InsertBulkLocations(ICollection<Location> locations)
+        public Task<long> InsertBulkGeospatialLocations(ICollection<Location> locations)
         {
-            return Client.AddGeoPoints(CollectionKey, locations);
+            return Client.AddGeoPoints(KeyHelper.GeospatialIndexCollectionKey, locations);
+        }
+
+        public async Task CreateClusterAsync(Cluster cluster)
+        {
+            //await using var transaction =
+            //    await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                await Client.AddToSetAsync(KeyHelper.ClusterCollectionKey, cluster.Id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            var key = string.Format(KeyHelper.ClusterDetailKey, cluster.Id);
+            await Client.SetAsync(key, cluster);
+
+            //await _unitOfWork.CommitTransactionAsync(transaction);
         }
     }
 }

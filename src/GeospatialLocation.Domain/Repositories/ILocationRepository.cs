@@ -6,6 +6,7 @@ namespace GeospatialLocation.Domain.Repositories
 {
     public interface ILocationRepository
     {
-        Task<long> InsertBulkLocations(ICollection<Location> locations);
+        Task<long> InsertBulkGeospatialLocations(ICollection<Location> locations);
+        Task CreateClusterAsync(Cluster cluster);
     }
 }

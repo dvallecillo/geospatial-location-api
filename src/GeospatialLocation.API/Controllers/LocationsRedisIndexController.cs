@@ -15,11 +15,11 @@ namespace GeospatialLocation.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class LocationsController : ControllerBase
+    public class LocationsRedisIndexController : Controller
     {
         private readonly IMediator _bus;
 
-        public LocationsController(IMediator bus)
+        public LocationsRedisIndexController(IMediator bus)
         {
             _bus = bus;
         }
@@ -29,7 +29,9 @@ namespace GeospatialLocation.API.Controllers
         public async Task<ActionResult<IEnumerable<LocationResultView>>> Get(
             [FromQuery] LocationsRequest request)
         {
-            var query = new GetLocationsQuery(request.Lat, request.Lon,
+            //TODO: maybe change to nullable
+
+            var query = new GetRedisIndexLocationsQuery(request.Lat, request.Lon,
                 request.MaxDistance, request.MaxResults);
 
             var locations = await _bus.Send(query);
@@ -49,7 +51,7 @@ namespace GeospatialLocation.API.Controllers
                 return BadRequest(e.Message);
             }
 
-            var command = new CreateLocationInitialLoadCommand(records);
+            var command = new CreateRedisIndexLocationInitialLoadCommand(records);
 
             await _bus.Send(command);
 

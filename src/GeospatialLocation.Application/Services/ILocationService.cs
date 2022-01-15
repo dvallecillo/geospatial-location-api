@@ -5,6 +5,6 @@ namespace GeospatialLocation.Application.Services
 {
     public interface ILocationService
     {
-        void BulkLoadKdTree(ICollection<Location> locations);
+        void BulkLoadLocations(ICollection<Location> locations);
     }
 }

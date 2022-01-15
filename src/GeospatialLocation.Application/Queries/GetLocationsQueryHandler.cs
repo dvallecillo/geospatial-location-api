@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GeospatialLocation.Application.ViewModels;
@@ -20,12 +21,7 @@ namespace GeospatialLocation.Application.Queries
             GetLocationsQuery request,
             CancellationToken cancellationToken)
         {
-            return await _queries.GetLocationsAsync(
-                request.Lat,
-                request.Lon,
-                request.MaxDistance,
-                request.MaxResults
-            );
+            throw new NotImplementedException();
         }
     }
 }

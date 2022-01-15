@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using GeospatialLocation.Application.Queries;
-using GeospatialLocation.Application.Services;
 using GeospatialLocation.Domain.Repositories;
+using GeospatialLocation.Domain.SeedWork;
 using GeospatialLocation.Infrastructure.Redis;
 using GeospatialLocation.Infrastructure.Redis.Queries;
 using GeospatialLocation.Infrastructure.Redis.Repositories;
@@ -22,8 +22,8 @@ namespace GeospatialLocation.Infrastructure.IoC
                 .As<ILocationQueries>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<LocationService>()
-                .As<ILocationService>()
+            builder.RegisterType<RedisUnitOfWork>()
+                .As<IUnitOfWork>()
                 .InstancePerLifetimeScope();
         }
 
@@ -36,6 +36,10 @@ namespace GeospatialLocation.Infrastructure.IoC
             builder.RegisterType<RedisDataClient>()
                 .As<IRedisDataClient>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<JsonNetSerializer>()
+                .As<ISerializer>()
+                .InstancePerDependency();
         }
     }
 }

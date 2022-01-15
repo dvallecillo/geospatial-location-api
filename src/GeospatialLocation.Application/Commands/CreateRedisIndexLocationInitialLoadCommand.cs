@@ -4,6 +4,6 @@ using MediatR;
 
 namespace GeospatialLocation.Application.Commands
 {
-    public record CreateLocationInitialLoadCommand(
+    public record CreateRedisIndexLocationInitialLoadCommand(
         ICollection<Location> Locations) : IRequest;
 }

@@ -10,6 +10,7 @@ namespace GeospatialLocation.Infrastructure.Redis
             = new(RedisConnectionFactory.CreateConnection);
 
         private readonly IDatabase _database;
+        private ITransaction? _transaction;
 
         public RedisDataClient()
         {
@@ -17,6 +18,30 @@ namespace GeospatialLocation.Infrastructure.Redis
         }
 
         public ConnectionMultiplexer Redis => Connection.Value;
+
+        public ITransaction CreateTransaction()
+        {
+            _transaction = _database.CreateTransaction();
+            return _transaction;
+        }
+
+        public Task StringSetAsync(string key, byte[] bytes)
+        {
+            return Task.FromResult(
+                _transaction != null
+                    ? _transaction.StringSetAsync(key, bytes)
+                    : _database.StringSetAsync(key, bytes));
+        }
+
+        public Task SetAddAsync(string key, Guid id)
+        {
+            return _transaction != null
+                ? _transaction.SetAddAsync(key, id.ToString())
+                : _database.SetAddAsync(key, id.ToString());
+        }
+
+
+        //GEOSPATIAL INDEX PART
 
         public Task<long> AddGeoPoints(string key, GeoEntry[] locations)
         {
@@ -27,6 +52,12 @@ namespace GeospatialLocation.Infrastructure.Redis
             int maxResults)
         {
             return _database.GeoRadiusAsync(key, lon, lat, maxDistance, GeoUnit.Meters, maxResults, Order.Ascending);
+        }
+
+        public void Dispose()
+        {
+            _transaction = null;
+            GC.SuppressFinalize(this);
         }
     }
 }

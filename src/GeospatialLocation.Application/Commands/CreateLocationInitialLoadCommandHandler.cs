@@ -35,10 +35,12 @@ namespace GeospatialLocation.Application.Commands
                 return Unit.Value;
             }
 
+            // TODO: Distinct by address
             var initialClusters = request.Locations.Where(LocationHelper.IsValid)
                 .Select(CreateInitialCluster).ToList();
 
-            for (var i = 1; i < initialClusters.Count; i++)
+            // TODO: I have check for repeated addresses inside Redis
+            for (var i = 0; i < initialClusters.Count; i++)
             {
                 if (InCluster(initialClusters[i], out var match))
                 {
@@ -52,12 +54,11 @@ namespace GeospatialLocation.Application.Commands
 
             foreach (var cluster in _clusters)
             {
-                //await using var transaction =
-                //    await _unitOfWork.BeginTransactionAsync(cancellationToken);
+                await using var transaction =
+                    await _unitOfWork.BeginTransactionAsync(cancellationToken);
                 await _repository.CreateClusterAsync(cluster.Value);
-                //await _unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
+                await _unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
             }
-
 
             return Unit.Value;
         }
@@ -65,7 +66,7 @@ namespace GeospatialLocation.Application.Commands
         private bool InCluster(Cluster cluster, out Cluster match)
         {
             match = null;
-            foreach (var (_, value) in _clusters)
+            foreach (var value in _clusters.Values)
             {
                 if (LocationHelper.Overlaps(cluster.Center, value.Boundary))
                 {

@@ -19,9 +19,9 @@ namespace GeospatialLocation.Infrastructure.Redis
             _serializer = serializer;
         }
 
-        public Task AddToSetAsync(string key, Guid id)
+        public void AddToSet(string key, Guid id)
         {
-            return _dataClient.SetAddAsync(key, id);
+            _dataClient.SetAddAsync(key, id);
         }
 
         public Task SetAsync<T>(string key, T data)
@@ -42,6 +42,12 @@ namespace GeospatialLocation.Infrastructure.Redis
             var results = await _dataClient.GetNearbyGeoPoints(key, lat, lon, maxDistance, maxResults);
 
             return results.Select(CreateLocationView).Take(maxResults);
+        }
+
+        public async Task<IEnumerable<T>> GetSortedAsync<T>(string key, string get)
+        {
+            var datas = await _dataClient.SortAsync(key, get);
+            return datas.Select(bytes => _serializer.Deserialize<T>(bytes));
         }
 
         private static GeoEntry CreateGeoEntry(Location location)

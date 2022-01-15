@@ -67,7 +67,8 @@ namespace GeospatialLocation.Application.Helpers
         {
             var location = cluster.Locations.First();
             match.Locations.Add(location);
-            match.Center = CalculateCentroid(match.Locations);
+            //TODO: I think it is not necessary
+            //match.Center = CalculateCentroid(match.Locations);
         }
 
         public static bool IsValid(Location location)

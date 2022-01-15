@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using GeospatialLocation.API.ExampleData;
-using GeospatialLocation.Application;
 using GeospatialLocation.Application.Commands;
 using GeospatialLocation.Application.Queries;
+using GeospatialLocation.Application.Requests;
 using GeospatialLocation.Application.ViewModels;
 using GeospatialLocation.Domain.Entities;
 using MediatR;
@@ -36,6 +36,7 @@ namespace GeospatialLocation.API.Controllers
             return Ok(locations);
         }
 
+        //TODO: move it to the startup
         [HttpPost]
         public async Task<IActionResult> CreateInitialLoad()
         {

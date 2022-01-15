@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeospatialLocation.Domain.Entities;
 using GeospatialLocation.Domain.Repositories;
@@ -24,23 +23,16 @@ namespace GeospatialLocation.Infrastructure.Redis.Repositories
 
         public async Task CreateClusterAsync(Cluster cluster)
         {
-            //await using var transaction =
-            //    await _unitOfWork.BeginTransactionAsync();
+            await using var transaction =
+                await _unitOfWork.BeginTransactionAsync();
 
-            try
-            {
-                await Client.AddToSetAsync(KeyHelper.ClusterCollectionKey, cluster.Id);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            //TODO: Add cluster distances to be more efficient
+            Client.AddToSet(KeyHelper.ClusterCollectionKey, cluster.Id);
 
             var key = string.Format(KeyHelper.ClusterDetailKey, cluster.Id);
             await Client.SetAsync(key, cluster);
 
-            //await _unitOfWork.CommitTransactionAsync(transaction);
+            await _unitOfWork.CommitTransactionAsync(transaction);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 
@@ -40,6 +41,13 @@ namespace GeospatialLocation.Infrastructure.Redis
                 : _database.SetAddAsync(key, id.ToString());
         }
 
+        public async Task<byte[][]> SortAsync(string key, string get)
+        {
+            var members = await _database.SortAsync(key, 0, -1, Order.Ascending, SortType.Alphabetic, default,
+                new RedisValue[] { get });
+
+            return members.Select(x => (byte[])x).ToArray();
+        }
 
         //GEOSPATIAL INDEX PART
 
@@ -59,5 +67,7 @@ namespace GeospatialLocation.Infrastructure.Redis
             _transaction = null;
             GC.SuppressFinalize(this);
         }
+
+        ///
     }
 }

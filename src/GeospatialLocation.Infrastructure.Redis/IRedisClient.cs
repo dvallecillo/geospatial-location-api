@@ -8,8 +8,10 @@ namespace GeospatialLocation.Infrastructure.Redis
 {
     public interface IRedisClient
     {
-        Task AddToSetAsync(string key, Guid id);
+        void AddToSet(string key, Guid id);
         Task SetAsync<T>(string key, T data);
+
+        Task<IEnumerable<T>> GetSortedAsync<T>(string key, string get);
 
         Task<long> AddGeoPoints(string key, ICollection<Location> location);
 

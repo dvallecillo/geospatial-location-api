@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GeospatialLocation.Application.Queries
 {
-    public record GetRedisIndexLocationsQuery
+    public record GetLocationsQuery
         (double Lat, double Lon, int MaxDistance, int MaxResults) :
             IRequest<IEnumerable<LocationResultView>>;
 }

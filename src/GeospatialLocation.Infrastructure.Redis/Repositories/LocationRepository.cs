@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GeospatialLocation.Domain.Entities;
 using GeospatialLocation.Domain.Repositories;
 using GeospatialLocation.Domain.SeedWork;
@@ -14,11 +13,6 @@ namespace GeospatialLocation.Infrastructure.Redis.Repositories
         public LocationRepository(IRedisClient client, IUnitOfWork unitOfWork) : base(client)
         {
             _unitOfWork = unitOfWork;
-        }
-
-        public Task<long> InsertBulkGeospatialLocations(ICollection<Location> locations)
-        {
-            return Client.AddGeoPoints(KeyHelper.GeospatialIndexCollectionKey, locations);
         }
 
         public async Task CreateClusterAsync(Cluster cluster)

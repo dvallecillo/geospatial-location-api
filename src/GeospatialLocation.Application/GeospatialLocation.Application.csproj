@@ -18,7 +18,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="Comparers\" />
     <Folder Include="Constants\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

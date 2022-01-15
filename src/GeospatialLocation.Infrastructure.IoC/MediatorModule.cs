@@ -16,14 +16,6 @@ namespace GeospatialLocation.Infrastructure.IoC
                 .AsImplementedInterfaces();
 
             builder.RegisterAssemblyTypes(
-                    typeof(GetRedisIndexLocationsQuery).GetTypeInfo().Assembly)
-                .AsClosedTypesOf(typeof(IRequestHandler<,>));
-
-            builder.RegisterAssemblyTypes(
-                    typeof(CreateRedisIndexLocationInitialLoadCommand).GetTypeInfo().Assembly)
-                .AsClosedTypesOf(typeof(IRequestHandler<,>));
-
-            builder.RegisterAssemblyTypes(
                     typeof(GetLocationsQuery).GetTypeInfo().Assembly)
                 .AsClosedTypesOf(typeof(IRequestHandler<,>));
 

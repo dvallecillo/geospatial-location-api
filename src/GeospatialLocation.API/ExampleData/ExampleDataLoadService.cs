@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -23,15 +24,22 @@ namespace GeospatialLocation.API.ExampleData
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var path = Path.Combine(currentDirectory, "ExampleData\\locations.csv");
+            try
+            {
+                var currentDirectory = Directory.GetCurrentDirectory();
+                var path = Path.Combine(currentDirectory, "ExampleData\\locations.csv");
 
-            using var reader = new StreamReader(path);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            ICollection<Location> records = csv.GetRecords<Location>().ToList();
-            var command = new CreateLocationInitialLoadCommand(records);
+                using var reader = new StreamReader(path);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                ICollection<Location> records = csv.GetRecords<Location>().ToList();
+                var command = new CreateLocationInitialLoadCommand(records);
 
-            await _bus.Send(command);
+                await _bus.Send(command);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

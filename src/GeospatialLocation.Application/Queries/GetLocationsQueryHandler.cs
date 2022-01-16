@@ -34,30 +34,23 @@ namespace GeospatialLocation.Application.Queries
                 return null;
             }
 
-            //TODO: change it for computed property
             var requestPoint = new Point
             {
                 Latitude = request.Lat,
                 Longitude = request.Lon
             };
 
-            // TODO: Smulwereld; Kastanjehof 26, Maasland	51.9371305	4.2704511
             var reachableClusters = clusters.Where(c =>
                 LocationHelper.CalculateDistance(c.Center, requestPoint) <=
                 request.MaxDistance + LocationConstants.ClusterDiagonal
             );
 
-            var locations = reachableClusters.SelectMany(c => c.Locations).ToList();
+            var locations = reachableClusters.SelectMany(c => c.Locations);
 
             var results = new List<LocationResultView>();
             foreach (var location in locations)
             {
-                var point = new Point
-                {
-                    Latitude = request.Lat,
-                    Longitude = request.Lon
-                };
-                var distance = LocationHelper.CalculateDistance(point, location.Point);
+                var distance = LocationHelper.CalculateDistance(requestPoint, location.Point);
 
                 if (distance <= request.MaxDistance)
                 {
@@ -66,9 +59,7 @@ namespace GeospatialLocation.Application.Queries
                 }
             }
 
-            var locationResultViews = results.OrderBy(r => r.Distance).Take(request.MaxResults);
-
-            return locationResultViews;
+            return results.OrderBy(r => r.Distance).Take(request.MaxResults);
         }
 
         private static void ValidateRequest(GetLocationsQuery request)

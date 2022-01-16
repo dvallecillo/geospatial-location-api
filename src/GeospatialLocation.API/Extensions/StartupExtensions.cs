@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using GeospatialLocation.API.Middleware;
+using Microsoft.AspNetCore.Builder;
 
 namespace GeospatialLocation.API.Extensions
 {

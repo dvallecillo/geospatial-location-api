@@ -34,6 +34,7 @@
     <Folder Include="Application\CommandHandlers\" />
     <Folder Include="Controllers\" />
     <Folder Include="API\" />
+    <Folder Include="Hosting\" />
   </ItemGroup>
 
 </Project>

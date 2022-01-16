@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GeospatialLocation.API.Extensions;
 using GeospatialLocation.Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
-namespace GeospatialLocation.API.Extensions
+namespace GeospatialLocation.API.Middleware
 {
     public class ErrorHandlingMiddleware
     {

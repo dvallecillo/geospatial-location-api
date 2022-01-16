@@ -31,7 +31,6 @@ namespace GeospatialLocation.Application.Commands
                 return Unit.Value;
             }
 
-            //Count = 167871
             var initialClusters = request.Locations.GroupBy(x => new { x.Latitude, x.Longitude, x.Address }).Select(g =>
                     new Location
                     {

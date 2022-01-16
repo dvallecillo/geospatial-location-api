@@ -1,5 +1,6 @@
 ﻿namespace GeospatialLocation.Application.Requests
 {
+#nullable enable
     public record LocationsRequest(
-        double Lat, double Lon, int MaxDistance = 100, int MaxResults = 50);
+        PointRequest Location, int MaxDistance = 100, int MaxResults = 50);
 }

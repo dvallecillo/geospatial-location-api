@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GeospatialLocation.Application.Constants;
+using GeospatialLocation.Application.Exceptions;
+using GeospatialLocation.Application.Exceptions.Errors;
 using GeospatialLocation.Application.Helpers;
 using GeospatialLocation.Application.ViewModels;
-using GeospatialLocation.Domain.Entities;
 using GeospatialLocation.Domain.Models;
 using MediatR;
 
@@ -24,30 +25,21 @@ namespace GeospatialLocation.Application.Queries
         public async Task<IEnumerable<LocationResultView>> Handle(
             GetLocationsQuery request, CancellationToken cancellationToken)
         {
-            var clusters = (await _queries.GetClustersAsync(
-                request.Lat,
-                request.Lon,
-                request.MaxDistance,
-                request.MaxResults
-            )).ToList();
+            ValidateRequest(request);
+
+            var clusters = (await _queries.GetClustersAsync()).ToList();
 
             if (clusters.Count == 0)
             {
                 return null;
             }
 
+            //TODO: change it for computed property
             var requestPoint = new Point
             {
                 Latitude = request.Lat,
                 Longitude = request.Lon
             };
-
-            var distances = new Dictionary<Cluster, double>();
-            foreach (var cluster in clusters)
-            {
-                var distance = LocationHelper.CalculateDistance(cluster.Center, requestPoint);
-                distances[cluster] = distance;
-            }
 
             // TODO: Smulwereld; Kastanjehof 26, Maasland	51.9371305	4.2704511
             var reachableClusters = clusters.Where(c =>
@@ -69,13 +61,36 @@ namespace GeospatialLocation.Application.Queries
 
                 if (distance <= request.MaxDistance)
                 {
-                    results.Add(new LocationResultView(location.Address, distance, point.Latitude, point.Longitude));
+                    results.Add(new LocationResultView(location.Address, distance, location.Latitude,
+                        location.Longitude));
                 }
             }
 
             var locationResultViews = results.OrderBy(r => r.Distance).Take(request.MaxResults);
 
             return locationResultViews;
+        }
+
+        private static void ValidateRequest(GetLocationsQuery request)
+        {
+            if (request.MaxDistance < 0)
+            {
+                throw new BusinessException(RequestErrors.NegativeMaxDistance);
+            }
+
+            if (request.MaxResults <= 0)
+            {
+                throw new BusinessException(RequestErrors.InvalidMaxResults);
+            }
+
+            if (!LocationHelper.IsValid(new Point
+                {
+                    Latitude = request.Lat,
+                    Longitude = request.Lon
+                }))
+            {
+                throw new BusinessException(RequestErrors.RequestLatLonOutOfRange);
+            }
         }
     }
 }

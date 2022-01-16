@@ -6,7 +6,6 @@ namespace GeospatialLocation.Application.Queries
 {
     public interface ILocationQueries
     {
-        Task<IEnumerable<Cluster>> GetClustersAsync(double requestLat, double requestLon,
-            int requestMaxDistance, int requestMaxResults);
+        Task<IEnumerable<Cluster>> GetClustersAsync();
     }
 }

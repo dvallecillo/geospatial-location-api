@@ -34,7 +34,7 @@ namespace GeospatialLocation.Application.Commands
             }
 
             // TODO: Distinct by address
-            var initialClusters = request.Locations.Where(LocationHelper.IsValid)
+            var initialClusters = request.Locations.Where(l => LocationHelper.IsValid(l.Point))
                 .Select(LocationHelper.CreateCluster).ToList();
 
             // TODO: I have to check for repeated addresses inside Redis
@@ -66,7 +66,7 @@ namespace GeospatialLocation.Application.Commands
             match = null;
             foreach (var value in _clusters.Values)
             {
-                if (LocationHelper.Overlaps(cluster.Center, value.Boundary))
+                if (LocationHelper.InsideBoundary(cluster.Center, value.Boundary))
                 {
                     match = value;
                     return true;

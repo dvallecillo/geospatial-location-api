@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GeospatialLocation.Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
@@ -31,6 +32,20 @@ namespace GeospatialLocation.API.Extensions
         {
             context.Response.Clear();
             context.Response.ContentType = "application/json";
+
+            switch (exception)
+            {
+                case BusinessException businessException:
+                    Log.Information(
+                        $"Domain Exception: {businessException.Code} - {businessException.Message}",
+                        businessException.PropertyValues);
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    return context.Response.WriteAsync(
+                        JsonSerializer.Serialize(
+                            new Error(
+                                businessException.Code, businessException.Message,
+                                businessException.PropertyValues)));
+            }
 
             var error = new Error("An error occurred during action handling", exception.Message);
             Log.Error(exception, error.Message);

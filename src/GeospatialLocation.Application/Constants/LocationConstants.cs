@@ -9,6 +9,6 @@ namespace GeospatialLocation.Application.Constants
         public const double MaxLat = 90;
         public const double MinLon = -180;
         public const double MaxLon = 180;
-        public static double ClusterDiagonal = Math.Sqrt(2) * ClusterRange; // TODO: Needs adjusting with 10KM
+        public static double ClusterDiagonal = Math.Sqrt(2) * ClusterRange * 1.1; // 10% of error adjustment
     }
 }

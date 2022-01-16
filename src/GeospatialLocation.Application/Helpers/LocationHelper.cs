@@ -42,22 +42,26 @@ namespace GeospatialLocation.Application.Helpers
             return dist * 1609.344;
         }
 
-        public static bool Overlaps(Point cluster, Boundary currentCluster)
+        /// <summary>
+        ///     Calculates if a lat/lon point is inside a boundary.
+        /// </summary>
+        public static bool InsideBoundary(Point point, Boundary boundary)
         {
-            return cluster.Latitude <= currentCluster.MaxLat &&
-                   cluster.Latitude >= currentCluster.MinLat &&
-                   cluster.Longitude <= currentCluster.MaxLon &&
-                   cluster.Longitude >= currentCluster.MinLon;
+            return point.Latitude <= boundary.MaxLat &&
+                   point.Latitude >= boundary.MinLat &&
+                   point.Longitude <= boundary.MaxLon &&
+                   point.Longitude >= boundary.MinLon;
         }
 
-        public static bool IsValid(Location location)
+        public static bool IsValid(Point point)
         {
-            return location.Latitude >= LocationConstants.MinLat && location.Longitude >= LocationConstants.MinLon &&
-                   location.Latitude <= LocationConstants.MaxLat && location.Longitude <= LocationConstants.MaxLon;
+            return point.Latitude >= LocationConstants.MinLat && point.Longitude >= LocationConstants.MinLon &&
+                   point.Latitude <= LocationConstants.MaxLat && point.Longitude <= LocationConstants.MaxLon;
         }
 
         public static Boundary CreateBoundary(Point point)
         {
+            //TODO: check extreme cases e.g: lat 90, lon 180, etc
             var latitudesOffset = new List<double>
             {
                 Add(point, LocationConstants.ClusterRange, 0).Latitude,

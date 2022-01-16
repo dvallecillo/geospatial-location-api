@@ -12,8 +12,7 @@ namespace GeospatialLocation.Infrastructure.Redis.Queries
         {
         }
 
-        public async Task<IEnumerable<Cluster>> GetClustersAsync(double lat, double lon,
-            int maxDistance, int maxResults)
+        public async Task<IEnumerable<Cluster>> GetClustersAsync()
         {
             return await FindClusters(KeyHelper.ClusterCollectionKey);
         }

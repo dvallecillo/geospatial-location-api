@@ -30,6 +30,7 @@ I've also worked with [SQL Server Spatial Data](https://docs.microsoft.com/es-es
 
 ## Remarks / Improvements
 
+- A great idea for next iterations would be to have different layers/resolutions of clusters so you don't have to search too many boxes. IMaybe It could be useful to index each point on several different grids (e.g. resolutions of 1Km, 5Km, 25Km, 125Km etc).
 - There might be some percentage of error in the calculations for the cluster diagonal, so I added a 10% deviation to be on the safe side and simplicity.
 - I´d also add benchmarks in a next iteration, to study any potential improvement.
 - docker-compose.yml and Dockerfile are not included as I think they are out of scope of this exercise.

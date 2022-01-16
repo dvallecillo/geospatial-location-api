@@ -26,13 +26,14 @@ namespace GeospatialLocation.API.Controllers
         public async Task<ActionResult<IEnumerable<LocationResultView>>> Get(
             [FromQuery] LocationsRequest request)
         {
-            if (request.Location == null)
+            var (requestPoint, maxDistance, maxResults) = request;
+            if (requestPoint == null)
             {
                 throw new ArgumentNullException();
             }
 
-            var query = new GetLocationsQuery(request.Location.Latitude, request.Location.Longitude,
-                request.MaxDistance, request.MaxResults);
+            var query = new GetLocationsQuery(requestPoint.Latitude, requestPoint.Longitude,
+                maxDistance, maxResults);
 
             var locations = await _bus.Send(query);
             return Ok(locations);

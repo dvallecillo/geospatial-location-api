@@ -4,34 +4,34 @@ This is an Open API project that allows clients to query locations with the cons
 
 ## Problem
 
-The problem of having a huge number of locations that you want to display on a map, is that you have to create a way where the speed of fetching the data is as fast as possible. Making a call to a DB directly without any optimizations regarding the storage of those locations would be a bad idea.
+The problem of having a huge number of locations that you want to display on a map, is that you have to create a way where the speed of fetching the data is as fast as possible. A direct call to the DB without any optimizations regarding the storage of those locations would be a bad idea.
 
 ## Solution
 
 The key idea of this solution is to group nearby points that are geographically close enough to each other into one object, called cluster, that contains combined information. The idea came from my reading on R-Tree data structure, which will do something similar to store nearby objects.
 
-Each of these clusters will contain a center latitude/longitude, where we can calculate distances against. This way the amount of distance calculations to perform are pruned drastically.
+Each of these clusters will contain a center latitude/longitude, where we can calculate distances against. This way, the amount of distance calculations to be performed are pruned drastically.
 
-I found out that with a 5 KM distance to each of the clusters border the amount of clusters generated is just around 6000 with the provided csv file which is a huge optimization from the >150,000 locations provided in a file. Probably more tweaking is needed to find the sweetspot
+I found out that with a 5 KM distance to each of the clusters border the amount of clusters generated is just around 6000 with the provided CSV file which is a huge optimization from the >150,000 locations provided in a file. Probably more tweaking is needed to find the sweet spot.
 
 ![alt text](https://github.com/dvallecillo/geospatial-location-api/blob/main/location-search.JPG?raw=true)
 
-In the above image depicts graphical simplication how the data will be stored and how a query would look.
+The image above depicts a graphical simplification of how the data will be stored and how a query would look.
 
-To know which of these clusters are reachable, a square is created with the provided Offset calculation functionality. It´s a simplified approach that for this MVP should suffice in accuracy. With the search box square diagonal + cluster diagonal I can quickly filter the amount of clusters that might have potential hits for the query.
+To know which of these clusters are reachable, a square is created with the provided Offset calculation functionality. It's a simplified approach that for this MVP should suffice in accuracy. With the search box square diagonal + cluster diagonal I can quickly filter the amount of clusters that might have potential hits for the query.
 
-In this case Redis has been used as DB for the solution, as I saw it a perfect fit. In next iterations of the system I´d probably had use a relational DB to store the locations and Redis as a cache/hashtable in memory. With the architectural approach taken, any DB technology would be easy to implement in the solution.
+In this case Redis has been used as a DB for the solution, as I saw it a perfect fit. In the next iterations of the system, I would probably use a relational DB to store the locations and Redis as a cache/hash table in memory. With the architectural approach taken, any DB technology would be easy to implement in the solution.
 
 ## Studied Approaches
 
-Inside this repo you may find a branch `feature/using-geospatial-index` completely functional, where I implemented the solution using [Redis's Geospatial Indexes](https://redis.io/commands/geodist). This approach would have been the fastest to develop and probably in query speed, but I considered that the scope of this exercise was to see my problem solving skills/approach and the main solution shows it best.
+Inside this repo you may find a branch `feature/using-geospatial-index` completely functional, where I implemented the solution using [Redis's Geospatial Indexes](https://redis.io/commands/geodist). This approach would have been the fastest to develop and probably in query speed, but I considered that the scope of this exercise was to see my problem-solving skills/approach and the main solution shows it best.
 
 I've also worked with [SQL Server Spatial Data](https://docs.microsoft.com/es-es/sql/relational-databases/spatial/spatial-data-sql-server?view=sql-server-ver15) in the past and It would also have been an easy implementation to provide, but again without much logic in the code.
 
 ## Remarks / Improvements
 
-- A great idea for next iterations would be to have different layers/resolutions of clusters so you don't have to search too many boxes. IMaybe It could be useful to index each point on several different grids (e.g. resolutions of 1Km, 5Km, 25Km, 125Km etc).
-- There might be some percentage of error in the calculations for the cluster diagonal, so I added a 10% deviation to be on the safe side and simplicity.
+- A great idea for next iterations would be to have different layers/resolutions of clusters so you don't have to search too many boxes. Maybe It could be useful to index each point on several different grids (e.g. resolutions of 1Km, 5Km, 25Km, 125Km etc).
+- There might be some percentage of error in the calculations for the cluster diagonal, so I added a 10% deviation to be on the safe side and for the simplicity.
 - I´d also add benchmarks in a next iteration, to study any potential improvement.
 - docker-compose.yml and Dockerfile are not included as I think they are out of scope of this exercise.
 - These kind of endpoints (GetLocations) should be implemented with pagination in mind (take/skip/total), specially if end-users are going to be the consumers.
@@ -53,7 +53,7 @@ I've also worked with [SQL Server Spatial Data](https://docs.microsoft.com/es-es
 
 ## Architecture
 
-This project follows the clean architecture idea which is easy to extend and test. The project is structured as It follows:
+This project follows the clean architecture idea, which is easy to extend and test. The project is structured as follows:
 
 #### API
 

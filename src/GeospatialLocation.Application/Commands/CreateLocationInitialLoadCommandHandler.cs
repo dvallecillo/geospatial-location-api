@@ -14,7 +14,6 @@ namespace GeospatialLocation.Application.Commands
     public class
         CreateLocationInitialLoadCommandHandler : IRequestHandler<CreateLocationInitialLoadCommand>
     {
-        private readonly Dictionary<Guid, Cluster> _clusters = new();
         private readonly ILocationRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -37,20 +36,21 @@ namespace GeospatialLocation.Application.Commands
             var initialClusters = request.Locations.Where(l => LocationHelper.IsValid(l.Point))
                 .Select(LocationHelper.CreateCluster).ToList();
 
-            // TODO: I have to check for repeated addresses inside Redis
-            for (var i = 0; i < initialClusters.Count; i++)
+            Dictionary<Guid, Cluster> clustersToInsert = new();
+            // TODO: Check for repeated addresses inside Redis
+            foreach (var initialCluster in initialClusters)
             {
-                if (InCluster(initialClusters[i], out var match))
+                if (InCluster(clustersToInsert.Values, initialCluster, out var match))
                 {
-                    match.Locations.Add(initialClusters[i].Locations.First());
+                    match.Locations.Add(initialCluster.Locations.First());
                 }
                 else
                 {
-                    _clusters.Add(initialClusters[i].Id, initialClusters[i]);
+                    clustersToInsert.Add(initialCluster.Id, initialCluster);
                 }
             }
 
-            foreach (var cluster in _clusters)
+            foreach (var cluster in clustersToInsert)
             {
                 await using var transaction =
                     await _unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -61,10 +61,10 @@ namespace GeospatialLocation.Application.Commands
             return Unit.Value;
         }
 
-        private bool InCluster(Cluster cluster, out Cluster match)
+        private static bool InCluster(IEnumerable<Cluster> currentClusters, Cluster cluster, out Cluster match)
         {
             match = null;
-            foreach (var value in _clusters.Values)
+            foreach (var value in currentClusters)
             {
                 if (LocationHelper.InsideBoundary(cluster.Center, value.Boundary))
                 {

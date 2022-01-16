@@ -9,6 +9,8 @@ namespace GeospatialLocation.Application.Helpers
 {
     public static class LocationHelper
     {
+        private const double MultiplierToMeter = 20014123.8528 / Math.PI; //20014123.8528 = 180 * 60 * 1.1515 * 1609.344
+
         /// <summary>
         ///     Creates a new geographical point that is <paramref name="offsetLat" />, <paramref name="offsetLon" /> meters from
         ///     provided point location.
@@ -36,10 +38,8 @@ namespace GeospatialLocation.Application.Helpers
             var rtheta = Math.PI * theta / 180;
             var dist = Math.Sin(rlat1) * Math.Sin(rlat2) + Math.Cos(rlat1) * Math.Cos(rlat2) * Math.Cos(rtheta);
             dist = Math.Acos(dist);
-            dist = dist * 180 / Math.PI;
-            dist = dist * 60 * 1.1515;
 
-            return dist * 1609.344;
+            return dist * MultiplierToMeter;
         }
 
         /// <summary>
@@ -61,7 +61,6 @@ namespace GeospatialLocation.Application.Helpers
 
         public static Boundary CreateBoundary(Point point)
         {
-            //TODO: check extreme cases e.g: lat 90, lon 180, etc
             var latitudesOffset = new List<double>
             {
                 Add(point, LocationConstants.ClusterRange, 0).Latitude,

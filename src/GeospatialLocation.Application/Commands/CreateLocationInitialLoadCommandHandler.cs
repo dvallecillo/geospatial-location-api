@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,17 +42,17 @@ namespace GeospatialLocation.Application.Commands
                 .Where(l => LocationHelper.IsValid(l.Point))
                 .Select(LocationHelper.CreateCluster).ToList();
 
-            Dictionary<Guid, Cluster> clustersToInsert = new();
+            List<Cluster> clustersToInsert = new();
 
             foreach (var initialCluster in initialClusters)
             {
-                if (InCluster(clustersToInsert.Values, initialCluster, out var match))
+                if (InCluster(clustersToInsert, initialCluster, out var match))
                 {
                     match.Locations.Add(initialCluster.Locations.First());
                 }
                 else
                 {
-                    clustersToInsert.Add(initialCluster.Id, initialCluster);
+                    clustersToInsert.Add(initialCluster);
                 }
             }
 
@@ -61,7 +60,7 @@ namespace GeospatialLocation.Application.Commands
             {
                 await using var transaction =
                     await _unitOfWork.BeginTransactionAsync(cancellationToken);
-                await _repository.CreateClusterAsync(cluster.Value);
+                await _repository.CreateClusterAsync(cluster);
                 await _unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
             }
 

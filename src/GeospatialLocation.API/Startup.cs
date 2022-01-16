@@ -1,4 +1,5 @@
 using Autofac;
+using GeospatialLocation.API.ExampleData;
 using GeospatialLocation.API.Extensions;
 using GeospatialLocation.Infrastructure.IoC;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +30,7 @@ namespace GeospatialLocation.API
             });
 
             services.Add(Configuration);
+            services.AddTransient<IHostedService, ExampleDataLoadService>(); // Run data load on startup
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

@@ -32,12 +32,19 @@ namespace GeospatialLocation.Application.Commands
                 return Unit.Value;
             }
 
-            // TODO: Distinct by address
-            var initialClusters = request.Locations.Where(l => LocationHelper.IsValid(l.Point))
+            //Count = 167871
+            var initialClusters = request.Locations.GroupBy(x => new { x.Latitude, x.Longitude, x.Address }).Select(g =>
+                    new Location
+                    {
+                        Address = g.Key.Address,
+                        Latitude = g.Key.Latitude,
+                        Longitude = g.Key.Longitude
+                    })
+                .Where(l => LocationHelper.IsValid(l.Point))
                 .Select(LocationHelper.CreateCluster).ToList();
 
             Dictionary<Guid, Cluster> clustersToInsert = new();
-            // TODO: Check for repeated addresses inside Redis
+
             foreach (var initialCluster in initialClusters)
             {
                 if (InCluster(clustersToInsert.Values, initialCluster, out var match))

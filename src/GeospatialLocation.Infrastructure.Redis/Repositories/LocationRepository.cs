@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GeospatialLocation.Domain.Entities;
+using GeospatialLocation.Domain.Models;
 using GeospatialLocation.Domain.Repositories;
 using GeospatialLocation.Domain.SeedWork;
 using GeospatialLocation.Infrastructure.Redis.Helpers;
@@ -28,6 +29,9 @@ namespace GeospatialLocation.Infrastructure.Redis.Repositories
             {
                 var key = string.Format(KeyHelper.ClusterDetailKey, cluster.Id);
                 await Client.SetAsync(key, cluster);
+
+                var centerKey = string.Format(KeyHelper.ClusterCenterKey, cluster.Id);
+                await Client.SetAsync(centerKey, new KeyValuePair<long, Point>(cluster.Id, cluster.Center));
             }
 
             await _unitOfWork.CommitTransactionAsync(transaction);

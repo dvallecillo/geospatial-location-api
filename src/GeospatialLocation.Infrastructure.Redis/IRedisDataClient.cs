@@ -11,5 +11,6 @@ namespace GeospatialLocation.Infrastructure.Redis
         Task StringSetAsync(string key, byte[] bytes);
         Task<byte[][]> SortAsync(string key, string get);
         Task SetAddAsync(string key, ICollection<long> collection);
+        Task<byte[]> StringGetAsync(string key);
     }
 }

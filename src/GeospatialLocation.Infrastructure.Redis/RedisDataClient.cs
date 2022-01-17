@@ -43,18 +43,23 @@ namespace GeospatialLocation.Infrastructure.Redis
             return members.Select(x => (byte[])x).ToArray();
         }
 
-        public void Dispose()
-        {
-            _transaction = null;
-            GC.SuppressFinalize(this);
-        }
-
         public Task SetAddAsync(string key, ICollection<long> collection)
         {
             var values = collection.Select(v => (RedisValue)v);
             return _transaction != null
                 ? _transaction.SetAddAsync(key, values.ToArray())
                 : _database.SetAddAsync(key, values.ToArray());
+        }
+
+        public async Task<byte[]> StringGetAsync(string key)
+        {
+            return await _database.StringGetAsync(key);
+        }
+
+        public void Dispose()
+        {
+            _transaction = null;
+            GC.SuppressFinalize(this);
         }
     }
 }

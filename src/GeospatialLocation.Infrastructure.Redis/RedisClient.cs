@@ -31,5 +31,13 @@ namespace GeospatialLocation.Infrastructure.Redis
         {
             _dataClient.SetAddAsync(key, collection);
         }
+
+        public async Task<T?> GetAsync<T>(string key)
+        {
+            var bytes = await _dataClient.StringGetAsync(key);
+            var data = _serializer.Deserialize<T>(bytes);
+
+            return data;
+        }
     }
 }

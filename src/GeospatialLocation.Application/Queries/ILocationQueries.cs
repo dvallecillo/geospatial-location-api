@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GeospatialLocation.Domain.Entities;
+using GeospatialLocation.Domain.Models;
 
 namespace GeospatialLocation.Application.Queries
 {
     public interface ILocationQueries
     {
-        Task<IEnumerable<Cluster>> GetClustersAsync();
+        Task<Cluster> GetClusterAsync(long id);
+        Task<IEnumerable<KeyValuePair<long, Point>>> GetClusterCentersAsync();
     }
 }

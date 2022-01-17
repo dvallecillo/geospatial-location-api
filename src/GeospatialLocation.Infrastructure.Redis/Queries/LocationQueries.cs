@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using GeospatialLocation.Application.Queries;
 using GeospatialLocation.Domain.Entities;
+using GeospatialLocation.Domain.Models;
 using GeospatialLocation.Infrastructure.Redis.Helpers;
 
 namespace GeospatialLocation.Infrastructure.Redis.Queries
@@ -12,15 +13,20 @@ namespace GeospatialLocation.Infrastructure.Redis.Queries
         {
         }
 
-        public async Task<IEnumerable<Cluster>> GetClustersAsync()
+        public async Task<Cluster> GetClusterAsync(long id)
         {
-            return await FindClusters(KeyHelper.ClusterCollectionKey);
+            return await Client.GetAsync<Cluster>(string.Format(KeyHelper.ClusterDetailKey, id));
         }
 
-        private Task<IEnumerable<Cluster>> FindClusters(string setName)
+        public async Task<IEnumerable<KeyValuePair<long, Point>>> GetClusterCentersAsync()
         {
-            var get = string.Format(KeyHelper.ClusterDetailKey, "*");
-            return Client.GetSortedAsync<Cluster>(setName, get);
+            return await FindClusterCenters(KeyHelper.ClusterCollectionKey);
+        }
+
+        private Task<IEnumerable<KeyValuePair<long, Point>>> FindClusterCenters(string setName)
+        {
+            var get = string.Format(KeyHelper.ClusterCenterKey, "*");
+            return Client.GetSortedAsync<KeyValuePair<long, Point>>(setName, get);
         }
     }
 }

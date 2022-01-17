@@ -7,6 +7,7 @@ using GeospatialLocation.Application.Exceptions;
 using GeospatialLocation.Application.Exceptions.Errors;
 using GeospatialLocation.Application.Helpers;
 using GeospatialLocation.Application.ViewModels;
+using GeospatialLocation.Domain.Entities;
 using GeospatialLocation.Domain.Models;
 using MediatR;
 
@@ -27,9 +28,9 @@ namespace GeospatialLocation.Application.Queries
         {
             ValidateRequest(request);
 
-            var clusters = (await _queries.GetClustersAsync()).ToList();
+            var clusterCenters = (await _queries.GetClusterCentersAsync()).ToList();
 
-            if (clusters.Count == 0)
+            if (clusterCenters.Count == 0)
             {
                 return null;
             }
@@ -40,12 +41,17 @@ namespace GeospatialLocation.Application.Queries
                 Longitude = request.Lon
             };
 
-            var reachableClusters = clusters.Where(c =>
-                LocationHelper.CalculateDistance(c.Center, requestPoint) <=
+            var reachableClusters = clusterCenters.Where(c =>
+                LocationHelper.CalculateDistance(c.Value, requestPoint) <=
                 request.MaxDistance + LocationConstants.ClusterDiagonal
             );
 
-            var locations = reachableClusters.SelectMany(c => c.Locations);
+            List<Location> locations = new();
+            foreach (var reachableCluster in reachableClusters)
+            {
+                var cluster = await _queries.GetClusterAsync(reachableCluster.Key);
+                locations.AddRange(cluster.Locations);
+            }
 
             var results = new List<LocationResultView>();
             foreach (var location in locations)

@@ -42,7 +42,7 @@ namespace GeospatialLocation.Application.Commands
                 .Select(LocationHelper.CreateCluster).ToList();
 
             List<Cluster> clustersToInsert = new();
-
+            long id = 1;
             foreach (var initialCluster in initialClusters)
             {
                 if (InCluster(clustersToInsert, initialCluster, out var match))
@@ -51,7 +51,9 @@ namespace GeospatialLocation.Application.Commands
                 }
                 else
                 {
+                    initialCluster.Id = id;
                     clustersToInsert.Add(initialCluster);
+                    id++;
                 }
             }
 

@@ -20,7 +20,6 @@ namespace GeospatialLocation.Infrastructure.Redis.Repositories
             await using var transaction =
                 await _unitOfWork.BeginTransactionAsync();
 
-            //TODO: Add cluster distances to be more efficient
             Client.AddToSet(KeyHelper.ClusterCollectionKey, cluster.Id);
 
             var key = string.Format(KeyHelper.ClusterDetailKey, cluster.Id);

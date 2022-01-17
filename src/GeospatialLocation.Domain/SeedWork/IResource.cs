@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace GeospatialLocation.Domain.SeedWork
+﻿namespace GeospatialLocation.Domain.SeedWork
 {
     public interface IResource
     {
-        Guid Id { get; }
+        long Id { get; }
     }
 }

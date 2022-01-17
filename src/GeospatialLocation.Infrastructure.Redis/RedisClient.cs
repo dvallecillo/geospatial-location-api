@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace GeospatialLocation.Infrastructure.Redis
             _serializer = serializer;
         }
 
-        public void AddToSet(string key, Guid id)
+        public void AddToSet(string key, long id)
         {
             _dataClient.SetAddAsync(key, id);
         }

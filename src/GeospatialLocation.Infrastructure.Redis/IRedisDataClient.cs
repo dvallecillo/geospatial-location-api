@@ -8,7 +8,7 @@ namespace GeospatialLocation.Infrastructure.Redis
     {
         ITransaction CreateTransaction();
         Task StringSetAsync(string key, byte[] bytes);
-        Task SetAddAsync(string key, Guid id);
+        Task SetAddAsync(string key, long id);
         Task<byte[][]> SortAsync(string key, string get);
     }
 }

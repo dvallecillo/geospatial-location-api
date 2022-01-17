@@ -90,7 +90,6 @@ namespace GeospatialLocation.Application.Helpers
             };
             return new Cluster
             {
-                Id = Guid.NewGuid(),
                 Locations = new List<Location>
                 {
                     location

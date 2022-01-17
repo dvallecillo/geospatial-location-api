@@ -140,7 +140,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations,
                 Center = location2.Point,
                 Boundary = LocationHelper.CreateBoundary(location2.Point),
-                Id = Guid.NewGuid()
+                Id = 1
             };
 
             var clusters = new List<Cluster> { cluster };
@@ -211,7 +211,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations,
                 Center = location2.Point,
                 Boundary = LocationHelper.CreateBoundary(location2.Point),
-                Id = Guid.NewGuid()
+                Id = 2
             };
 
             var clusters = new List<Cluster> { cluster };
@@ -282,7 +282,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations,
                 Center = location2.Point,
                 Boundary = LocationHelper.CreateBoundary(location2.Point),
-                Id = Guid.NewGuid()
+                Id = 1
             };
 
             var clusters = new List<Cluster> { cluster };
@@ -376,7 +376,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations1,
                 Center = location2.Point,
                 Boundary = LocationHelper.CreateBoundary(location2.Point),
-                Id = Guid.NewGuid()
+                Id = 1
             };
 
             var cluster2 = new Cluster
@@ -384,7 +384,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations2,
                 Center = location5.Point,
                 Boundary = LocationHelper.CreateBoundary(location5.Point),
-                Id = Guid.NewGuid()
+                Id = 2
             };
 
             var clusters = new List<Cluster> { cluster1, cluster2 };
@@ -483,7 +483,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations1,
                 Center = location2.Point,
                 Boundary = LocationHelper.CreateBoundary(location2.Point),
-                Id = Guid.NewGuid()
+                Id = 1
             };
 
             var cluster2 = new Cluster
@@ -491,7 +491,7 @@ namespace GeospatialLocation.Tests.Application.QueryHandlers
                 Locations = locations2,
                 Center = location5.Point,
                 Boundary = LocationHelper.CreateBoundary(location5.Point),
-                Id = Guid.NewGuid()
+                Id = 2
             };
 
             var clusters = new List<Cluster> { cluster1, cluster2 };

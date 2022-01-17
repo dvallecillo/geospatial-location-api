@@ -34,7 +34,7 @@ namespace GeospatialLocation.Infrastructure.Redis
                     : _database.StringSetAsync(key, bytes));
         }
 
-        public Task SetAddAsync(string key, Guid id)
+        public Task SetAddAsync(string key, long id)
         {
             return _transaction != null
                 ? _transaction.SetAddAsync(key, id.ToString())

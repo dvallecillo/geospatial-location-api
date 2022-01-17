@@ -35,6 +35,7 @@ I've also worked with [SQL Server Spatial Data](https://docs.microsoft.com/es-es
 - A great idea for next iterations would be to have different layers/resolutions of clusters so you don't have to search too many boxes. Maybe It could be useful to index each point on several different grids (e.g. resolutions of 1Km, 5Km, 25Km, 125Km etc).
 - There might be some percentage of error in the calculations for the cluster diagonal, so I added a 10% deviation to be on the safe side and for the simplicity.
 - I´d also add benchmarks in a next iteration, to study any potential improvement.
+- Beware that testing with Swagger and requesting a humongous amount of max results might freeze your browser.
 - docker-compose.yml and Dockerfile are not included as I think they are out of scope of this exercise.
 - These kind of endpoints (GetLocations) should be implemented with pagination in mind (take/skip/total), specially if end-users are going to be the consumers.
 - The provided CalculateDistance method was doing unnecessary calculations so it has been simplified:

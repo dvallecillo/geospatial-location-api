@@ -15,11 +15,6 @@ namespace GeospatialLocation.Infrastructure.Redis
             _serializer = serializer;
         }
 
-        public void AddToSet(string key, long id)
-        {
-            _dataClient.SetAddAsync(key, id);
-        }
-
         public Task SetAsync<T>(string key, T data)
         {
             var bytes = _serializer.Serialize(data);
@@ -30,6 +25,11 @@ namespace GeospatialLocation.Infrastructure.Redis
         {
             var datas = await _dataClient.SortAsync(key, get);
             return datas.Select(bytes => _serializer.Deserialize<T>(bytes));
+        }
+
+        public void AddToSet(string key, ICollection<long> collection)
+        {
+            _dataClient.SetAddAsync(key, collection);
         }
     }
 }

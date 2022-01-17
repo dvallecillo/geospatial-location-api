@@ -59,7 +59,7 @@ namespace GeospatialLocation.Tests.Application.CommandHandlers
 
             locationRepository.Setup(
                 x =>
-                    x.CreateClusterAsync(It.IsAny<Cluster>())
+                    x.CreateClustersAsync(It.IsAny<ICollection<Cluster>>())
             ).Returns(Task.CompletedTask);
 
 
@@ -72,8 +72,8 @@ namespace GeospatialLocation.Tests.Application.CommandHandlers
             await sut.Handle(command, default);
 
             //Assert
-            locationRepository.Verify(x => x.CreateClusterAsync(It.IsAny<Cluster>()),
-                Times.Exactly(command.Locations.Count));
+            locationRepository.Verify(x => x.CreateClustersAsync(It.IsAny<ICollection<Cluster>>()),
+                Times.Once());
         }
 
         [Theory]
@@ -122,7 +122,7 @@ namespace GeospatialLocation.Tests.Application.CommandHandlers
 
             locationRepository.Setup(
                 x =>
-                    x.CreateClusterAsync(It.IsAny<Cluster>())
+                    x.CreateClustersAsync(It.IsAny<ICollection<Cluster>>())
             ).Returns(Task.CompletedTask);
 
 
@@ -135,7 +135,7 @@ namespace GeospatialLocation.Tests.Application.CommandHandlers
             await sut.Handle(command, default);
 
             //Assert
-            locationRepository.Verify(x => x.CreateClusterAsync(It.IsAny<Cluster>()),
+            locationRepository.Verify(x => x.CreateClustersAsync(It.IsAny<ICollection<Cluster>>()),
                 Times.Never());
         }
 
@@ -185,7 +185,7 @@ namespace GeospatialLocation.Tests.Application.CommandHandlers
 
             locationRepository.Setup(
                 x =>
-                    x.CreateClusterAsync(It.IsAny<Cluster>())
+                    x.CreateClustersAsync(It.IsAny<ICollection<Cluster>>())
             ).Returns(Task.CompletedTask);
 
 
@@ -198,7 +198,7 @@ namespace GeospatialLocation.Tests.Application.CommandHandlers
             await sut.Handle(command, default);
 
             //Assert
-            locationRepository.Verify(x => x.CreateClusterAsync(It.IsAny<Cluster>()),
+            locationRepository.Verify(x => x.CreateClustersAsync(It.IsAny<ICollection<Cluster>>()),
                 Times.Once());
         }
     }

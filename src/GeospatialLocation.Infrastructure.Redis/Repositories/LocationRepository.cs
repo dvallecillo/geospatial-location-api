@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using GeospatialLocation.Domain.Entities;
 using GeospatialLocation.Domain.Repositories;
 using GeospatialLocation.Domain.SeedWork;
@@ -15,15 +17,18 @@ namespace GeospatialLocation.Infrastructure.Redis.Repositories
             _unitOfWork = unitOfWork;
         }
 
-        public async Task CreateClusterAsync(Cluster cluster)
+        public async Task CreateClustersAsync(ICollection<Cluster> clusters)
         {
             await using var transaction =
                 await _unitOfWork.BeginTransactionAsync();
 
-            Client.AddToSet(KeyHelper.ClusterCollectionKey, cluster.Id);
+            Client.AddToSet(KeyHelper.ClusterCollectionKey, clusters.Select(c => c.Id).ToList());
 
-            var key = string.Format(KeyHelper.ClusterDetailKey, cluster.Id);
-            await Client.SetAsync(key, cluster);
+            foreach (var cluster in clusters)
+            {
+                var key = string.Format(KeyHelper.ClusterDetailKey, cluster.Id);
+                await Client.SetAsync(key, cluster);
+            }
 
             await _unitOfWork.CommitTransactionAsync(transaction);
         }

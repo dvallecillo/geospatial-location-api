@@ -57,11 +57,11 @@ namespace GeospatialLocation.Application.Commands
                 }
             }
 
-            foreach (var cluster in clustersToInsert)
+            if (clustersToInsert.Count > 0)
             {
                 await using var transaction =
                     await _unitOfWork.BeginTransactionAsync(cancellationToken);
-                await _repository.CreateClusterAsync(cluster);
+                await _repository.CreateClustersAsync(clustersToInsert);
                 await _unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
             }
 

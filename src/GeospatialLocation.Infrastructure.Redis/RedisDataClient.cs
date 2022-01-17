@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using StackExchange.Redis;
@@ -34,13 +35,6 @@ namespace GeospatialLocation.Infrastructure.Redis
                     : _database.StringSetAsync(key, bytes));
         }
 
-        public Task SetAddAsync(string key, long id)
-        {
-            return _transaction != null
-                ? _transaction.SetAddAsync(key, id.ToString())
-                : _database.SetAddAsync(key, id.ToString());
-        }
-
         public async Task<byte[][]> SortAsync(string key, string get)
         {
             var members = await _database.SortAsync(key, 0, -1, Order.Ascending, SortType.Alphabetic, default,
@@ -53,6 +47,14 @@ namespace GeospatialLocation.Infrastructure.Redis
         {
             _transaction = null;
             GC.SuppressFinalize(this);
+        }
+
+        public Task SetAddAsync(string key, ICollection<long> collection)
+        {
+            var values = collection.Select(v => (RedisValue)v);
+            return _transaction != null
+                ? _transaction.SetAddAsync(key, values.ToArray())
+                : _database.SetAddAsync(key, values.ToArray());
         }
     }
 }

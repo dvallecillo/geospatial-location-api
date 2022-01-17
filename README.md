@@ -84,8 +84,7 @@ This layer contains classes for accessing external resources such as databases. 
 
 You need to have [Docker](https://www.docker.com/get-started) installed and run the following commands in the cmd/powershell.
 
-1.  `docker create --name redisDev -p 6385:6379 redis`
+1.  `docker create --name redisDev -p 6379:6379 redis`
 2.  `docker start redisDev`
-3.  `docker run -it --link redisDev:redis --rm redis redis-cli -h redis -p 6379`
 
 After that open the solution and  press the play button or F5.
